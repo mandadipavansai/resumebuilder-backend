@@ -18,12 +18,34 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+
+require('dotenv').config(); 
+
+const cors = require('cors');
+
+
+const allowedOrigins = [
+  'http://localhost:3000', 
+  process.env.FRONTEND_URL 
+];
+
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: function (origin, callback) {
+
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
+
 app.use(cors(corsOptions));
+
 
 // Middlewares
 app.use(express.json());
